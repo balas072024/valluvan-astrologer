@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valluvan Astrologer - Vedic Astrology</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #04050a;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        .accent { color: #7c6bff; }
+
+        a { color: #7c6bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        header {
+            background: linear-gradient(135deg, #0a0b14 0%, #12132a 100%);
+            border-bottom: 1px solid #1a1b3a;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            color: #7c6bff;
+            letter-spacing: 1px;
+        }
+
+        header h1 span { color: #e0e0e0; font-weight: 300; }
+
+        #user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        #user-info span { color: #aaa; }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .card {
+            background: #0c0d1a;
+            border: 1px solid #1a1b3a;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card h2 {
+            color: #7c6bff;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.3rem;
+            color: #aaa;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.65rem 0.8rem;
+            background: #111225;
+            border: 1px solid #2a2b4a;
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #7c6bff;
+        }
+
+        button, .btn {
+            background: #7c6bff;
+            color: #fff;
+            border: none;
+            padding: 0.65rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        button:hover, .btn:hover {
+            background: #6a58e0;
+            transform: translateY(-1px);
+        }
+
+        button:active { transform: translateY(0); }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid #7c6bff;
+            color: #7c6bff;
+        }
+
+        .btn-secondary:hover { background: rgba(124,107,255,0.1); }
+
+        .btn-danger {
+            background: #cc3355;
+        }
+        .btn-danger:hover { background: #aa2244; }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .alert-error {
+            background: rgba(204,51,85,0.15);
+            border: 1px solid #cc3355;
+            color: #ff6688;
+        }
+
+        .alert-success {
+            background: rgba(50,200,100,0.15);
+            border: 1px solid #32c864;
+            color: #50e080;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #1a1b3a;
+            padding-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #888;
+            transition: color 0.2s, background 0.2s;
+        }
+
+        .tab:hover { color: #7c6bff; }
+
+        .tab.active {
+            color: #7c6bff;
+            background: rgba(124,107,255,0.1);
+            font-weight: 600;
+        }
+
+        .section { display: none; }
+        .section.active { display: block; }
+
+        .chart-result {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .chart-result .stat {
+            background: #111225;
+            border: 1px solid #2a2b4a;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stat .label {
+            font-size: 0.75rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat .value {
+            font-size: 1.2rem;
+            color: #7c6bff;
+            font-weight: 700;
+        }
+
+        .stat .sub {
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-top: 0.2rem;
+        }
+
+        .horoscope-card {
+            background: #111225;
+            border: 1px solid #2a2b4a;
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin-top: 1rem;
+        }
+
+        .horoscope-card h3 {
+            color: #7c6bff;
+            margin-bottom: 0.5rem;
+        }
+
+        .horoscope-card p {
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        .horoscope-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .horoscope-meta span {
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+
+        .horoscope-meta strong { color: #7c6bff; }
+
+        .reading-item {
+            background: #111225;
+            border: 1px solid #2a2b4a;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .reading-item .meta {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 0.3rem;
+        }
+
+        .hidden { display: none !important; }
+
+        .rasi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .rasi-item {
+            background: #111225;
+            border: 1px solid #2a2b4a;
+            border-radius: 8px;
+            padding: 0.75rem;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .rasi-item:hover { border-color: #7c6bff; }
+
+        .rasi-item .name { color: #7c6bff; font-weight: 600; }
+        .rasi-item .english { color: #888; font-size: 0.85rem; }
+        .rasi-item .period { color: #666; font-size: 0.75rem; margin-top: 0.2rem; }
+
+        @media (max-width: 600px) {
+            .form-row { grid-template-columns: 1fr; }
+            .chart-result { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Valluvan <span>Astrologer</span></h1>
+        <div id="user-info">
+            <span id="username-display" class="hidden"></span>
+            <button id="logout-btn" class="btn-danger hidden" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Auth Section (shown when not logged in) -->
+        <div id="auth-section">
+            <div class="tabs">
+                <div class="tab active" onclick="switchAuthTab('login')">Login</div>
+                <div class="tab" onclick="switchAuthTab('register')">Register</div>
+            </div>
+
+            <div id="auth-message"></div>
+
+            <!-- Login Form -->
+            <div id="login-form" class="card">
+                <h2>Login</h2>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="login-username" placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" placeholder="Enter password">
+                </div>
+                <button onclick="doLogin()">Login</button>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-form" class="card hidden">
+                <h2>Create Account</h2>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="reg-username" placeholder="Choose a username">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="reg-email" placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="reg-password" placeholder="Choose a password (min 6 chars)">
+                </div>
+                <button onclick="doRegister()">Register</button>
+            </div>
+        </div>
+
+        <!-- Main App (shown when logged in) -->
+        <div id="app-section" class="hidden">
+            <div class="tabs">
+                <div class="tab active" data-tab="chart" onclick="switchTab('chart')">Birth Chart</div>
+                <div class="tab" data-tab="horoscope" onclick="switchTab('horoscope')">Daily Horoscope</div>
+                <div class="tab" data-tab="rasis" onclick="switchTab('rasis')">All Rasis</div>
+                <div class="tab" data-tab="history" onclick="switchTab('history')">Reading History</div>
+            </div>
+
+            <div id="app-message"></div>
+
+            <!-- Birth Chart Section -->
+            <div id="section-chart" class="section active">
+                <div class="card">
+                    <h2>Generate Birth Chart</h2>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="chart-name" placeholder="Enter full name">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Birth Date</label>
+                            <input type="date" id="chart-date">
+                        </div>
+                        <div class="form-group">
+                            <label>Birth Time</label>
+                            <input type="time" id="chart-time">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Birth Place</label>
+                        <input type="text" id="chart-place" placeholder="City, State, Country">
+                    </div>
+                    <button onclick="createChart()">Generate Chart</button>
+                </div>
+
+                <div id="chart-result" class="card hidden">
+                    <h2>Birth Chart Result</h2>
+                    <p id="chart-person-info" style="color:#aaa; margin-bottom:1rem;"></p>
+                    <div class="chart-result">
+                        <div class="stat">
+                            <div class="label">Rasi (Moon Sign)</div>
+                            <div class="value" id="result-rasi"></div>
+                            <div class="sub" id="result-rasi-english"></div>
+                        </div>
+                        <div class="stat">
+                            <div class="label">Nakshatra (Star)</div>
+                            <div class="value" id="result-nakshatra"></div>
+                            <div class="sub" id="result-nakshatra-planet"></div>
+                        </div>
+                        <div class="stat">
+                            <div class="label">Ruling Planet</div>
+                            <div class="value" id="result-planet"></div>
+                            <div class="sub">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="my-charts" class="card hidden">
+                    <h2>My Charts</h2>
+                    <div id="charts-list"></div>
+                </div>
+            </div>
+
+            <!-- Horoscope Section -->
+            <div id="section-horoscope" class="section">
+                <div class="card">
+                    <h2>Daily Horoscope</h2>
+                    <div class="form-group">
+                        <label>Select Rasi</label>
+                        <select id="horoscope-rasi">
+                            <option value="">-- Choose your Rasi --</option>
+                            <option value="Mesham">Mesham (Aries)</option>
+                            <option value="Rishabam">Rishabam (Taurus)</option>
+                            <option value="Mithunam">Mithunam (Gemini)</option>
+                            <option value="Kadagam">Kadagam (Cancer)</option>
+                            <option value="Simmam">Simmam (Leo)</option>
+                            <option value="Kanni">Kanni (Virgo)</option>
+                            <option value="Thulam">Thulam (Libra)</option>
+                            <option value="Viruchigam">Viruchigam (Scorpio)</option>
+                            <option value="Dhanusu">Dhanusu (Sagittarius)</option>
+                            <option value="Magaram">Magaram (Capricorn)</option>
+                            <option value="Kumbam">Kumbam (Aquarius)</option>
+                            <option value="Meenam">Meenam (Pisces)</option>
+                        </select>
+                    </div>
+                    <button onclick="getHoroscope()">Get Horoscope</button>
+                </div>
+
+                <div id="horoscope-result" class="hidden">
+                    <div class="horoscope-card">
+                        <h3 id="horo-title"></h3>
+                        <p id="horo-prediction"></p>
+                        <p id="horo-advice" style="font-style:italic; color:#aaa;"></p>
+                        <div class="horoscope-meta">
+                            <span>Lucky Number: <strong id="horo-number"></strong></span>
+                            <span>Lucky Color: <strong id="horo-color"></strong></span>
+                            <span>Compatible: <strong id="horo-compat"></strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- All Rasis Section -->
+            <div id="section-rasis" class="section">
+                <div class="card">
+                    <h2>The 12 Tamil Rasis</h2>
+                    <div class="rasi-grid" id="rasi-grid"></div>
+                </div>
+            </div>
+
+            <!-- Reading History Section -->
+            <div id="section-history" class="section">
+                <div class="card">
+                    <h2>Reading History</h2>
+                    <button onclick="loadHistory()" class="btn-secondary" style="margin-bottom:1rem;">Refresh</button>
+                    <div id="history-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API = '';
+        let token = localStorage.getItem('valluvan_token');
+        let username = localStorage.getItem('valluvan_username');
+
+        function authHeaders() {
+            return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token };
+        }
+
+        function showMessage(elId, msg, isError) {
+            const el = document.getElementById(elId);
+            el.innerHTML = `<div class="alert ${isError ? 'alert-error' : 'alert-success'}">${msg}</div>`;
+            setTimeout(() => el.innerHTML = '', 5000);
+        }
+
+        // Auth tabs
+        function switchAuthTab(tab) {
+            document.querySelectorAll('#auth-section .tab').forEach(t => t.classList.remove('active'));
+            if (tab === 'login') {
+                document.getElementById('login-form').classList.remove('hidden');
+                document.getElementById('register-form').classList.add('hidden');
+                document.querySelectorAll('#auth-section .tab')[0].classList.add('active');
+            } else {
+                document.getElementById('login-form').classList.add('hidden');
+                document.getElementById('register-form').classList.remove('hidden');
+                document.querySelectorAll('#auth-section .tab')[1].classList.add('active');
+            }
+        }
+
+        // App tabs
+        function switchTab(tab) {
+            document.querySelectorAll('#app-section .tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('section-' + tab).classList.add('active');
+
+            if (tab === 'rasis') loadRasis();
+            if (tab === 'history') loadHistory();
+            if (tab === 'chart') loadMyCharts();
+        }
+
+        // Check auth state
+        function checkAuth() {
+            if (token) {
+                document.getElementById('auth-section').classList.add('hidden');
+                document.getElementById('app-section').classList.remove('hidden');
+                document.getElementById('username-display').textContent = username;
+                document.getElementById('username-display').classList.remove('hidden');
+                document.getElementById('logout-btn').classList.remove('hidden');
+                loadMyCharts();
+            } else {
+                document.getElementById('auth-section').classList.remove('hidden');
+                document.getElementById('app-section').classList.add('hidden');
+                document.getElementById('username-display').classList.add('hidden');
+                document.getElementById('logout-btn').classList.add('hidden');
+            }
+        }
+
+        function logout() {
+            token = null;
+            username = null;
+            localStorage.removeItem('valluvan_token');
+            localStorage.removeItem('valluvan_username');
+            checkAuth();
+        }
+
+        async function doLogin() {
+            const u = document.getElementById('login-username').value;
+            const p = document.getElementById('login-password').value;
+            try {
+                const res = await fetch(API + '/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: u, password: p })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    token = data.token;
+                    username = data.user.username;
+                    localStorage.setItem('valluvan_token', token);
+                    localStorage.setItem('valluvan_username', username);
+                    checkAuth();
+                } else {
+                    showMessage('auth-message', data.error || 'Login failed', true);
+                }
+            } catch (e) {
+                showMessage('auth-message', 'Connection error', true);
+            }
+        }
+
+        async function doRegister() {
+            const u = document.getElementById('reg-username').value;
+            const e = document.getElementById('reg-email').value;
+            const p = document.getElementById('reg-password').value;
+            try {
+                const res = await fetch(API + '/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: u, email: e, password: p })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    token = data.token;
+                    username = data.user.username;
+                    localStorage.setItem('valluvan_token', token);
+                    localStorage.setItem('valluvan_username', username);
+                    checkAuth();
+                } else {
+                    const msg = data.details ? data.details.join(', ') : data.error;
+                    showMessage('auth-message', msg, true);
+                }
+            } catch (err) {
+                showMessage('auth-message', 'Connection error', true);
+            }
+        }
+
+        async function createChart() {
+            const name = document.getElementById('chart-name').value;
+            const date = document.getElementById('chart-date').value;
+            const time = document.getElementById('chart-time').value;
+            const place = document.getElementById('chart-place').value;
+            try {
+                const res = await fetch(API + '/api/chart', {
+                    method: 'POST',
+                    headers: authHeaders(),
+                    body: JSON.stringify({ name, birth_date: date, birth_time: time, birth_place: place })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    const c = data.chart;
+                    document.getElementById('chart-result').classList.remove('hidden');
+                    document.getElementById('chart-person-info').textContent =
+                        `${c.name} - Born ${c.birth_date} at ${c.birth_time} in ${c.birth_place}`;
+                    document.getElementById('result-rasi').textContent = c.rasi.name;
+                    document.getElementById('result-rasi-english').textContent = c.rasi.english;
+                    document.getElementById('result-nakshatra').textContent = c.nakshatra.name;
+                    document.getElementById('result-nakshatra-planet').textContent = c.nakshatra.ruling_planet;
+                    document.getElementById('result-planet').textContent = c.rasi.ruling_planet;
+                    loadMyCharts();
+                } else {
+                    const msg = data.details ? data.details.join(', ') : data.error;
+                    showMessage('app-message', msg, true);
+                }
+            } catch (e) {
+                showMessage('app-message', 'Connection error', true);
+            }
+        }
+
+        async function loadMyCharts() {
+            try {
+                const res = await fetch(API + '/api/chart', { headers: authHeaders() });
+                const data = await res.json();
+                if (res.ok && data.charts.length > 0) {
+                    document.getElementById('my-charts').classList.remove('hidden');
+                    document.getElementById('charts-list').innerHTML = data.charts.map(c => `
+                        <div class="reading-item">
+                            <div class="meta">${c.created_at}</div>
+                            <strong>${c.name}</strong> - ${c.rasi} (${c.nakshatra})
+                            <div style="color:#888; font-size:0.85rem;">${c.birth_date} | ${c.birth_time} | ${c.birth_place}</div>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) {}
+        }
+
+        async function getHoroscope() {
+            const rasi = document.getElementById('horoscope-rasi').value;
+            if (!rasi) {
+                showMessage('app-message', 'Please select a rasi', true);
+                return;
+            }
+            try {
+                const res = await fetch(API + '/api/horoscope/' + rasi, { headers: authHeaders() });
+                const data = await res.json();
+                if (res.ok) {
+                    const h = data.horoscope;
+                    document.getElementById('horoscope-result').classList.remove('hidden');
+                    document.getElementById('horo-title').textContent = h.rasi + ' - ' + h.date;
+                    document.getElementById('horo-prediction').textContent = h.prediction;
+                    document.getElementById('horo-advice').textContent = h.advice;
+                    document.getElementById('horo-number').textContent = h.lucky_number;
+                    document.getElementById('horo-color').textContent = h.lucky_color;
+                    document.getElementById('horo-compat').textContent = h.compatible_rasi;
+                } else {
+                    showMessage('app-message', data.error, true);
+                }
+            } catch (e) {
+                showMessage('app-message', 'Connection error', true);
+            }
+        }
+
+        async function loadRasis() {
+            try {
+                const res = await fetch(API + '/api/rasis');
+                const data = await res.json();
+                if (res.ok) {
+                    document.getElementById('rasi-grid').innerHTML = data.rasis.map(r => `
+                        <div class="rasi-item" onclick="document.getElementById('horoscope-rasi').value='${r.name}'; switchTab('horoscope');">
+                            <div class="name">${r.name}</div>
+                            <div class="english">${r.english} - ${r.ruling_planet}</div>
+                            <div class="period">${r.period}</div>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) {}
+        }
+
+        async function loadHistory() {
+            try {
+                const res = await fetch(API + '/api/readings', { headers: authHeaders() });
+                const data = await res.json();
+                if (res.ok) {
+                    if (data.readings.length === 0) {
+                        document.getElementById('history-list').innerHTML =
+                            '<p style="color:#888;">No readings yet. Generate a chart or check your horoscope!</p>';
+                    } else {
+                        document.getElementById('history-list').innerHTML = data.readings.map(r => `
+                            <div class="reading-item">
+                                <div class="meta">${r.created_at} | ${r.reading_type} | ${r.rasi}</div>
+                                <p>${r.content.prediction || ''}</p>
+                            </div>
+                        `).join('');
+                    }
+                }
+            } catch (e) {}
+        }
+
+        // Enter key support for login/register forms
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                if (!document.getElementById('login-form').classList.contains('hidden')) {
+                    doLogin();
+                } else if (!document.getElementById('register-form').classList.contains('hidden')) {
+                    doRegister();
+                }
+            }
+        });
+
+        checkAuth();
+    </script>
+</body>
+</html>
